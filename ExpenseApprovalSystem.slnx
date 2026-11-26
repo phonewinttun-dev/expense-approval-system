@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ExpenseApprovalSystem.API/ExpenseApprovalSystem.API.csproj" />
+  <Project Path="ExpenseApprovalSystem.Database/ExpenseApprovalSystem.Database.csproj" />
+  <Project Path="ExpenseApprovalSystem.Domain/ExpenseApprovalSystem.Domain.csproj" />
+  <Project Path="ExpenseApprovalSystem.Shared/ExpenseApprovalSystem.Shared.csproj" />
+</Solution>
