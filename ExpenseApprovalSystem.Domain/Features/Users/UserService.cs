@@ -1,5 +1,7 @@
 using ExpenseApprovalSystem.Database.AppDbContextModels;
+using ExpenseApprovalSystem.Domain.Features.AuditLog;
 using ExpenseApprovalSystem.Shared;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseApprovalSystem.Domain.Features.Users;
@@ -8,11 +10,16 @@ public sealed class UserService : IUserService
 {
     private readonly AppDbContext _db;
     private readonly UserValidationPolicy _validationPolicy;
+    private readonly IPublisher _publisher;
 
-    public UserService(AppDbContext db, UserValidationPolicy validationPolicy)
+    public UserService(
+        AppDbContext db,
+        UserValidationPolicy validationPolicy,
+        IPublisher publisher)
     {
         _db = db;
         _validationPolicy = validationPolicy;
+        _publisher = publisher;
     }
 
     public async Task<Result<List<UserResponseModel>>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -63,6 +70,15 @@ public sealed class UserService : IUserService
         _db.TblUsers.Add(user);
         await _db.SaveChangesAsync(cancellationToken);
 
+        await _publisher.Publish(new AuditEvent(
+            Action: "CREATE",
+            ResourceType: "User",
+            TargetId: user.Id,
+            TargetUserId: user.Id,
+            ActorUserId: "system",
+            Reason: "User registered"
+        ), cancellationToken);
+
         return Result<UserResponseModel>.Success(MapToResponse(user), "User created.");
     }
 
@@ -76,13 +92,31 @@ public sealed class UserService : IUserService
         if (user is null)
             return Result<UserResponseModel>.Failure("User not found.");
 
+        var changes = CollectChanges(user, request);
+        var oldStatus = user.Status;
+        var newStatus = request.Status.Trim();
+
         user.Name = request.Name.Trim();
         user.Email = request.Email.Trim();
         user.MobileNo = request.MobileNo?.Trim();
         user.Limit = request.Limit;
-        user.Status = request.Status.Trim();
+        user.Status = newStatus;
 
         await _db.SaveChangesAsync(cancellationToken);
+
+        if (changes.Count > 0 || oldStatus != newStatus)
+        {
+            await _publisher.Publish(new AuditEvent(
+                Action: "UPDATE",
+                ResourceType: "User",
+                TargetId: user.Id,
+                TargetUserId: user.Id,
+                ActorUserId: "system",
+                Changes: changes,
+                OldStatus: oldStatus != newStatus ? oldStatus : null,
+                NewStatus: oldStatus != newStatus ? newStatus : null
+            ), cancellationToken);
+        }
 
         return Result<UserResponseModel>.Success(MapToResponse(user), "User updated.");
     }
@@ -96,7 +130,36 @@ public sealed class UserService : IUserService
         _db.TblUsers.Remove(user);
         await _db.SaveChangesAsync(cancellationToken);
 
+        await _publisher.Publish(new AuditEvent(
+            Action: "DELETE",
+            ResourceType: "User",
+            TargetId: user.Id,
+            TargetUserId: user.Id,
+            ActorUserId: "system",
+            Reason: $"Deleted user {user.Name} ({user.Email})"
+        ), cancellationToken);
+
         return Result.Success("User deleted.");
+    }
+
+    private static List<ChangeRecord> CollectChanges(TblUser existing, UpdateUserRequestModel updated)
+    {
+        var changes = new List<ChangeRecord>();
+
+        if (existing.Name != updated.Name.Trim())
+            changes.Add(new("Name", existing.Name, updated.Name.Trim()));
+
+        if (existing.Email != updated.Email.Trim())
+            changes.Add(new("Email", existing.Email, updated.Email.Trim()));
+
+        var newMobile = updated.MobileNo?.Trim();
+        if (existing.MobileNo != newMobile)
+            changes.Add(new("MobileNo", existing.MobileNo, newMobile));
+
+        if (existing.Limit != updated.Limit)
+            changes.Add(new("Limit", existing.Limit.ToString(), updated.Limit.ToString()));
+
+        return changes;
     }
 
     private static UserResponseModel MapToResponse(TblUser user) =>
