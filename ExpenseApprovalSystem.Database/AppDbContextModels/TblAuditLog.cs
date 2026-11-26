@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace ExpenseApprovalSystem.Database.AppDbContextModels;
+
+public partial class TblAuditLog
+{
+    public string Id { get; set; } = null!;
+
+    public string ActorUserId { get; set; } = null!;
+
+    public string? ActorRole { get; set; }
+
+    public string Action { get; set; } = null!;
+
+    public string ResourceType { get; set; } = null!;
+
+    public string TargetId { get; set; } = null!;
+
+    public string? TargetLookupKey { get; set; }
+
+    public string? TargetUserId { get; set; }
+
+    public string? TargetUserName { get; set; }
+
+    public string? TargetUserMobileNo { get; set; }
+
+    public string? Changes { get; set; }
+
+    public string? Reason { get; set; }
+
+    public DateTime ActionDateTime { get; set; }
+}
