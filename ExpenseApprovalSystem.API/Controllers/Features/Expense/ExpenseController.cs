@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ExpenseApprovalSystem.API.Controllers
+namespace ExpenseApprovalSystem.API.Controllers.Features.Expense
 {
     [Route("api/[controller]")]
     [ApiController]
