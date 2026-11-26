@@ -16,4 +16,8 @@
     <ProjectReference Include="..\ExpenseApprovalSystem.Shared\ExpenseApprovalSystem.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="15.0.0" />
+  </ItemGroup>
+
 </Project>
