@@ -8,9 +8,9 @@ namespace ExpenseApprovalSystem.API.Controllers.Features.Expense
     [ApiController]
     public class ExpenseController : ControllerBase
     {
-        private readonly ExpenseService _expenseService;
+        private readonly IExpenseService _expenseService;
 
-        public ExpenseController(ExpenseService expenseService)
+        public ExpenseController(IExpenseService expenseService)
         {
             _expenseService = expenseService;
         }

@@ -26,7 +26,6 @@ namespace ExpenseApprovalSystem.Domain
             builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddScoped<ExpenseValidationPolicy>();
-            builder.Services.AddScoped<ExpenseService>();
             builder.Services.AddScoped<IExpenseService, ExpenseService>();
         }
     }
