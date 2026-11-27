@@ -8,12 +8,15 @@
 
   <ItemGroup>
     <Folder Include="Features\AuditLog\" />
-    <Folder Include="Features\Expense\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ExpenseApprovalSystem.Database\ExpenseApprovalSystem.Database.csproj" />
     <ProjectReference Include="..\ExpenseApprovalSystem.Shared\ExpenseApprovalSystem.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>

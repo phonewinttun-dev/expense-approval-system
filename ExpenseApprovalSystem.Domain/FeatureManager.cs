@@ -1,6 +1,8 @@
 ﻿using ExpenseApprovalSystem.Database.AppDbContextModels;
 using ExpenseApprovalSystem.Domain.Features.AuditLog;
+using ExpenseApprovalSystem.Domain.Features.Expense;
 using ExpenseApprovalSystem.Domain.Features.Users;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,23 +11,23 @@ namespace ExpenseApprovalSystem.Domain
 {
     public static class FeatureManager
     {
-        public static IServiceCollection AddDomainServices(
-            this IServiceCollection services,
-            IConfiguration configuration)
+        public static void AddDomain(this WebApplicationBuilder builder)
         {
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddMediatR(cfg =>
+            builder.Services.AddMediatR(cfg =>
                 cfg.RegisterServicesFromAssembly(typeof(FeatureManager).Assembly));
 
-            services.AddScoped<IAuditLogService, AuditLogService>();
-            services.AddScoped<AuditTargetResolver>();
+            builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+            builder.Services.AddScoped<AuditTargetResolver>();
 
-            services.AddScoped<UserValidationPolicy>();
-            services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<UserValidationPolicy>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
-            return services;
+            builder.Services.AddScoped<ExpenseValidationPolicy>();
+            builder.Services.AddScoped<ExpenseService>();
+            builder.Services.AddScoped<IExpenseService, ExpenseService>();
         }
     }
 }
