@@ -1,7 +1,7 @@
 using ExpenseApprovalSystem.Domain.Features.Users;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ExpenseApprovalSystem.API.Controllers.Features.Users;
+namespace ExpenseApprovalSystem.Api.Controllers.Features.Users;
 
 [ApiController]
 [Route("api/[controller]")]

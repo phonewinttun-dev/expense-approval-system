@@ -1,7 +1,7 @@
 ﻿using ExpenseApprovalSystem.Domain.Features.AuditLog;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ExpenseApprovalSystem.API.Controllers.Features.AuditLog;
+namespace ExpenseApprovalSystem.Api.Controllers.Features.AuditLog;
 
 [Route("api/[controller]")]
 [ApiController]

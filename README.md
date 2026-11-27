@@ -37,7 +37,7 @@ An ASP.NET Core (.NET 10) Web API for managing users, expense requests, approval
 ```text
 ExpenseApprovalSystem/
 ├── ExpenseApprovalSystem.slnx
-├── ExpenseApprovalSystem.API/          # ASP.NET Core Web API, Controllers, OpenAPI/Scalar
+├── ExpenseApprovalSystem.Api/          # ASP.NET Core Web API, Controllers, OpenAPI/Scalar
 │   ├── Controllers/Features/
 │   │   ├── AuditLog/AuditLogController.cs
 │   │   ├── Expense/ExpenseController.cs
@@ -70,7 +70,7 @@ ExpenseApprovalSystem/
 
 ### 1. Configure the Database Connection
 
-Update `ConnectionStrings:DefaultConnection` in `ExpenseApprovalSystem.API/appsettings.json` (or `appsettings.Development.json`) to point to your SQL Server instance:
+Update `ConnectionStrings:DefaultConnection` in `ExpenseApprovalSystem.Api/appsettings.json` (or `appsettings.Development.json`) to point to your SQL Server instance:
 
 ```json
 {
@@ -92,7 +92,7 @@ Create the `ExpenseAuditDb` database with the three tables mapped in `AppDbConte
 
 ```bash
 dotnet restore
-dotnet run --project ExpenseApprovalSystem.API
+dotnet run --project ExpenseApprovalSystem.Api
 ```
 
 By default, the API runs on:
