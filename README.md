@@ -61,6 +61,25 @@ ExpenseApprovalSystem/
 
 ---
 
+## How MediatR Is Used
+
+MediatR is used to decouple domain operations from audit logging via in-process notifications (`INotification`). After `UserService` or `ExpenseService` validates and persists a change (`CREATE`, `UPDATE`, `DELETE`, `REQUEST`, `APPROVE`, `REJECT`), it publishes an `AuditEvent` through `IPublisher`. MediatR dispatches the event to `AuditEventHandler`, which formats field/status changes, resolves target user metadata via `AuditTargetResolver`, and writes the entry to `TblAuditLog`.
+
+```mermaid
+flowchart TD
+    A["HTTP Request<br/>(UserController / ExpenseController)"] --> B["Domain Service<br/>(UserService / ExpenseService)"]
+    B --> C["Validate & Save Entity<br/>(TblUser / TblExpense)"]
+    C --> D["IPublisher.Publish(AuditEvent)<br/>(MediatR INotification)"]
+    D --> E["AuditEventHandler<br/>(INotificationHandler&lt;AuditEvent&gt;)"]
+    E --> F["Format Field &amp; Status Changes"]
+    E --> G["AuditTargetResolver<br/>Resolve Target User Info"]
+    F --> H["IAuditLogService.LogAsync"]
+    G --> H
+    H --> I[("SQL Server<br/>TblAuditLog")]
+```
+
+---
+
 ## Getting Started
 
 ### Prerequisites
