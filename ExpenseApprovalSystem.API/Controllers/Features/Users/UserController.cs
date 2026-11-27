@@ -35,7 +35,7 @@ public sealed class UserController : ControllerBase
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] UpdateUserRequestModel request, CancellationToken cancellationToken)
     {
         var result = await _userService.UpdateAsync(id, request, cancellationToken);

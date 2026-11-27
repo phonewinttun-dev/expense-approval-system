@@ -20,17 +20,17 @@ public sealed class UserValidationPolicy
 
     public Result ValidateUpdate(UpdateUserRequestModel request)
     {
-        if (string.IsNullOrWhiteSpace(request.Name))
-            return Result.Failure("Name is required.");
+        if (request.Name is not null && string.IsNullOrWhiteSpace(request.Name))
+            return Result.Failure("Name cannot be empty.");
 
-        if (string.IsNullOrWhiteSpace(request.Email))
-            return Result.Failure("Email is required.");
+        if (request.Email is not null && string.IsNullOrWhiteSpace(request.Email))
+            return Result.Failure("Email cannot be empty.");
 
-        if (request.Limit < 0)
+        if (request.Limit is < 0)
             return Result.Failure("Limit cannot be negative.");
 
-        if (string.IsNullOrWhiteSpace(request.Status))
-            return Result.Failure("Status is required.");
+        if (request.Status is not null && string.IsNullOrWhiteSpace(request.Status))
+            return Result.Failure("Status cannot be empty.");
 
         return Result.Success();
     }

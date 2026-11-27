@@ -22,17 +22,29 @@ public sealed class UserService : IUserService
         _publisher = publisher;
     }
 
+    #region Get All Users
     public async Task<Result<List<UserResponseModel>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var users = await _db.TblUsers
             .AsNoTracking()
             .OrderByDescending(u => u.CreatedAt)
-            .Select(u => MapToResponse(u))
+            .Select(u => new UserResponseModel
+            {
+                Id = u.Id,
+                Name = u.Name,
+                Email = u.Email,
+                MobileNo = u.MobileNo,
+                Limit = u.Limit,
+                Status = u.Status,
+                CreatedAt = u.CreatedAt
+            })
             .ToListAsync(cancellationToken);
 
         return Result<List<UserResponseModel>>.Success(users);
     }
+    #endregion
 
+    #region Get User By Id
     public async Task<Result<UserResponseModel>> GetByIdAsync(string id, CancellationToken cancellationToken = default)
     {
         var user = await _db.TblUsers
@@ -42,9 +54,21 @@ public sealed class UserService : IUserService
         if (user is null)
             return Result<UserResponseModel>.Failure("User not found.");
 
-        return Result<UserResponseModel>.Success(MapToResponse(user));
+        var response = new UserResponseModel
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            MobileNo = user.MobileNo,
+            Limit = user.Limit,
+            Status = user.Status,
+            CreatedAt = user.CreatedAt
+        };
+        return Result<UserResponseModel>.Success(response);
     }
+    #endregion
 
+    #region Create User
     public async Task<Result<UserResponseModel>> CreateAsync(CreateUserRequestModel request, CancellationToken cancellationToken = default)
     {
         var validation = _validationPolicy.ValidateCreate(request);
@@ -79,9 +103,21 @@ public sealed class UserService : IUserService
             Reason: "User registered"
         ), cancellationToken);
 
-        return Result<UserResponseModel>.Success(MapToResponse(user), "User created.");
+        var response = new UserResponseModel
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            MobileNo = user.MobileNo,
+            Limit = user.Limit,
+            Status = user.Status,
+            CreatedAt = user.CreatedAt
+        };
+        return Result<UserResponseModel>.Success(response, "User created successfully.");
     }
+    #endregion
 
+    #region Update User
     public async Task<Result<UserResponseModel>> UpdateAsync(string id, UpdateUserRequestModel request, CancellationToken cancellationToken = default)
     {
         var validation = _validationPolicy.ValidateUpdate(request);
@@ -94,13 +130,22 @@ public sealed class UserService : IUserService
 
         var changes = CollectChanges(user, request);
         var oldStatus = user.Status;
-        var newStatus = request.Status.Trim();
+        var newStatus = request.Status is not null ? request.Status.Trim() : user.Status;
 
-        user.Name = request.Name.Trim();
-        user.Email = request.Email.Trim();
-        user.MobileNo = request.MobileNo?.Trim();
-        user.Limit = request.Limit;
-        user.Status = newStatus;
+        if (request.Name is not null)
+            user.Name = request.Name.Trim();
+
+        if (request.Email is not null)
+            user.Email = request.Email.Trim();
+
+        if (request.MobileNo is not null)
+            user.MobileNo = request.MobileNo.Trim();
+
+        if (request.Limit.HasValue)
+            user.Limit = request.Limit.Value;
+
+        if (request.Status is not null)
+            user.Status = newStatus;
 
         await _db.SaveChangesAsync(cancellationToken);
 
@@ -118,9 +163,21 @@ public sealed class UserService : IUserService
             ), cancellationToken);
         }
 
-        return Result<UserResponseModel>.Success(MapToResponse(user), "User updated.");
+        var response = new UserResponseModel
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            MobileNo = user.MobileNo,
+            Limit = user.Limit,
+            Status = user.Status,
+            CreatedAt = user.CreatedAt
+        };
+        return Result<UserResponseModel>.Success(response, "User updated successfully.");
     }
+    #endregion
 
+    #region Delete User
     public async Task<Result> DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
         var user = await _db.TblUsers.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
@@ -141,27 +198,24 @@ public sealed class UserService : IUserService
 
         return Result.Success("User deleted.");
     }
+    #endregion
 
     private static List<ChangeRecord> CollectChanges(TblUser existing, UpdateUserRequestModel updated)
     {
         var changes = new List<ChangeRecord>();
 
-        if (existing.Name != updated.Name.Trim())
+        if (updated.Name is not null && existing.Name != updated.Name.Trim())
             changes.Add(new("Name", existing.Name, updated.Name.Trim()));
 
-        if (existing.Email != updated.Email.Trim())
+        if (updated.Email is not null && existing.Email != updated.Email.Trim())
             changes.Add(new("Email", existing.Email, updated.Email.Trim()));
 
-        var newMobile = updated.MobileNo?.Trim();
-        if (existing.MobileNo != newMobile)
-            changes.Add(new("MobileNo", existing.MobileNo, newMobile));
+        if (updated.MobileNo is not null && existing.MobileNo != updated.MobileNo.Trim())
+            changes.Add(new("MobileNo", existing.MobileNo, updated.MobileNo.Trim()));
 
-        if (existing.Limit != updated.Limit)
-            changes.Add(new("Limit", existing.Limit.ToString(), updated.Limit.ToString()));
+        if (updated.Limit.HasValue && existing.Limit != updated.Limit.Value)
+            changes.Add(new("Limit", existing.Limit.ToString(), updated.Limit.Value.ToString()));
 
         return changes;
     }
-
-    private static UserResponseModel MapToResponse(TblUser user) =>
-        new(user.Id, user.Name, user.Email, user.MobileNo, user.Limit, user.Status, user.CreatedAt);
 }
