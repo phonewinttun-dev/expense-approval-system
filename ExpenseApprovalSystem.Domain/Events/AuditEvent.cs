@@ -1,6 +1,4 @@
-using MediatR;
-
-namespace ExpenseApprovalSystem.Domain.Features.AuditLog;
+namespace ExpenseApprovalSystem.Domain.Events;
 
 public sealed record AuditEvent(
     string Action,

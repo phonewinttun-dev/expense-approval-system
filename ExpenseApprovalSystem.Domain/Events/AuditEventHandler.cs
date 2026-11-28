@@ -1,7 +1,4 @@
-using ExpenseApprovalSystem.Database.AppDbContextModels;
-using MediatR;
-
-namespace ExpenseApprovalSystem.Domain.Features.AuditLog;
+namespace ExpenseApprovalSystem.Domain.Events;
 
 public sealed class AuditEventHandler : INotificationHandler<AuditEvent>
 {

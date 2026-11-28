@@ -1,7 +1,4 @@
-using ExpenseApprovalSystem.Database.AppDbContextModels;
-using Microsoft.EntityFrameworkCore;
-
-namespace ExpenseApprovalSystem.Domain.Features.AuditLog;
+namespace ExpenseApprovalSystem.Domain.Events;
 
 public sealed class AuditTargetResolver
 {

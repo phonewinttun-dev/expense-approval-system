@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ExpenseApprovalSystem.Database.AppDbContextModels;
+﻿namespace ExpenseApprovalSystem.Database.AppDbContextModels;
 
 public partial class TblAuditLog
 {
