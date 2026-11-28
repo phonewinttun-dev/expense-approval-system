@@ -1,5 +1,4 @@
 ﻿using ExpenseApprovalSystem.Domain.Features.Expense;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseApprovalSystem.Api.Controllers.Features.Expense

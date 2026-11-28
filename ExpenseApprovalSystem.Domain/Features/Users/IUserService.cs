@@ -1,5 +1,3 @@
-using ExpenseApprovalSystem.Shared;
-
 namespace ExpenseApprovalSystem.Domain.Features.Users;
 
 public interface IUserService

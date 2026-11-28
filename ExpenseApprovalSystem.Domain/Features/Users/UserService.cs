@@ -1,9 +1,3 @@
-using ExpenseApprovalSystem.Database.AppDbContextModels;
-using ExpenseApprovalSystem.Domain.Features.AuditLog;
-using ExpenseApprovalSystem.Shared;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-
 namespace ExpenseApprovalSystem.Domain.Features.Users;
 
 public sealed class UserService : IUserService

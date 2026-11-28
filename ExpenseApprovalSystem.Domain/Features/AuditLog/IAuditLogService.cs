@@ -1,6 +1,3 @@
-using ExpenseApprovalSystem.Database.AppDbContextModels;
-using ExpenseApprovalSystem.Shared;
-
 namespace ExpenseApprovalSystem.Domain.Features.AuditLog;
 
 public interface IAuditLogService

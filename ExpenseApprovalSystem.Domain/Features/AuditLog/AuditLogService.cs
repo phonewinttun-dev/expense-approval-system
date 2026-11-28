@@ -1,7 +1,3 @@
-using ExpenseApprovalSystem.Database.AppDbContextModels;
-using ExpenseApprovalSystem.Shared;
-using Microsoft.EntityFrameworkCore;
-
 namespace ExpenseApprovalSystem.Domain.Features.AuditLog;
 
 public sealed class AuditLogService : IAuditLogService

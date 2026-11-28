@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\AuditLog\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ExpenseApprovalSystem.Database\ExpenseApprovalSystem.Database.csproj" />
     <ProjectReference Include="..\ExpenseApprovalSystem.Shared\ExpenseApprovalSystem.Shared.csproj" />
   </ItemGroup>
